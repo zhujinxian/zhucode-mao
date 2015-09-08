@@ -1,5 +1,5 @@
 # zhucode-mao
-
+MAO is an java interface for mapping data from mongodb to objects.
 ## Interface
 
 ```java
