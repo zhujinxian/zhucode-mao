@@ -38,6 +38,8 @@ private Jongo jongo;
 		long num = 0;
 		if (cnd.equals("")) {
 			num = mc.count();
+		} else if (cnd.equals("#")){
+			num = mc.count(queryParas.get(0).toString());
 		} else if (queryParasNum > 0){
 			num = mc.count(cnd, queryParas.toArray());
 		} else {

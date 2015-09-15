@@ -33,10 +33,24 @@ public class FindQuerier implements Querier {
 		
 		int queryParasNum = StringUtils.countMatches(cnd, "#");
 		int projectParasNum = StringUtils.countMatches(prj, "#");
+		int sortParasNum = 0;
+		
+		if (sort.equals("#")) {
+			sortParasNum = 1;
+		}
 		
 		List<Object> paras = runtime.getParameters();
-		if (paras.size() < queryParasNum + projectParasNum) {
+		if (paras.size() < queryParasNum + projectParasNum + sortParasNum) {
 			return null;
+		}
+		
+		List<Object> skipLimit = paras.subList(queryParasNum + projectParasNum + sortParasNum, paras.size());
+		
+		if (skipLimit.size() > 0) {
+			skip = (int)skipLimit.get(0);
+		}
+		if (skipLimit.size() > 1) {
+			limit = (int)skipLimit.get(1);
 		}
 		
 		List<Object> queryParas = paras.subList(0, queryParasNum);
@@ -47,6 +61,8 @@ public class FindQuerier implements Querier {
 		
 		if (cnd.equals("")) {
 			f = jongo.getCollection(doc).find();
+		} else if (cnd.equals("#")){
+			f = jongo.getCollection(doc).find(paras.get(0).toString());
 		} else if (cnd.equals("#id")){
 			Class<?> returnType = m.getReturnType();
 			return jongo.getCollection(doc).findOne("{_id : #}",  paras.get(0)).as(returnType);
@@ -60,7 +76,19 @@ public class FindQuerier implements Querier {
 		}
 		
 		if (!sort.equals("")) {
-			f = f.sort(sort);
+			if (sortParasNum == 1) {
+				List<Object> sortObjs = paras.subList(queryParasNum + projectParasNum, queryParasNum + projectParasNum + 1);
+				String sortString = sortObjs.get(0).toString();
+				if (!sortString.equals("") && !sortString.equals("{}")) {
+					f = f.sort(sortString);
+				}
+			} else {
+				String[] sorts = sort.split("#");
+				for (String s : sorts) {
+					f = f.sort(s);
+				}
+			}
+		
 		}
 		
 		if (skip > 0) {
