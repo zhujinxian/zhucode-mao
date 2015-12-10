@@ -21,7 +21,7 @@ private Jongo jongo;
 	public Object execute(StatementRuntime runtime) {
 		Method m = runtime.getMethod();
 		Count count = m.getAnnotation(Count.class);
-		String doc = count.doc();
+		String doc = count.coll();
 		String cnd = count.cnd();
 		
 		int queryParasNum = StringUtils.countMatches(cnd, "#");

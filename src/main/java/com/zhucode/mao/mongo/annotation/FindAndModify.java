@@ -9,11 +9,13 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Find {
+public @interface FindAndModify {
 	String coll() default "";
 	String cnd() default "";
 	String prj() default "";
 	String sort() default "";
-	int limit() default 0;
-	int skip() default 0;
+	String with() default "";
+	boolean remove() default false;
+	boolean upsert() default false;
+	boolean isNew() default true;
 }

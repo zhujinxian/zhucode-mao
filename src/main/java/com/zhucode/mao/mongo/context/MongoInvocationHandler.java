@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jongo.Jongo;
+import org.jongo.Mapper;
 import org.jongo.marshall.jackson.JacksonMapper;
+import org.jongo.marshall.jackson.configuration.MapperModifier;
 
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.mongodb.DB;
 import com.zhucode.mao.mongo.annotation.Count;
@@ -78,7 +82,7 @@ public class MongoInvocationHandler implements InvocationHandler {
 		
 		if (this.gmao == null) {
 			MAO mao = this.objectType.getAnnotation(MAO.class);
-			Jongo jongo = getJongo(mao.db());
+			Jongo jongo = getJongo(mao.db(), mao.camel());
 			this.gmao = new GenericMAOImp(jongo);
 			
 		}
@@ -116,7 +120,7 @@ public class MongoInvocationHandler implements InvocationHandler {
         if (statement == null) {
             synchronized (method) {
             
-            	Jongo jongo = getJongo(mao.db());
+            	Jongo jongo = getJongo(mao.db(), mao.camel());
 				
 				Querier query = null;
             	if (method.isAnnotationPresent(Find.class)) {
@@ -143,13 +147,27 @@ public class MongoInvocationHandler implements InvocationHandler {
 	}
 	
 	
-	private synchronized Jongo getJongo(String dbName) {
+	private synchronized Jongo getJongo(String dbName, boolean camel) {
 		if (this.jongo == null) {
 			DB db = dsf.getDataSource(dbName);
-			this.jongo = new Jongo(db, new JacksonMapper.Builder()
-					.registerModule(new JodaModule())
-					.enable(MapperFeature.AUTO_DETECT_GETTERS).build());
+			if (camel) {
+				this.jongo = new Jongo(db, new JacksonMapper.Builder()
+				.registerModule(new JodaModule())
+				.addModifier(new MapperModifier() {
+					@Override
+					public void modify(ObjectMapper mapper) {
+						mapper.setPropertyNamingStrategy(
+								PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+					}
+				}).build());
+			} else {
+				this.jongo = new Jongo(db, new JacksonMapper.Builder()
+				.registerModule(new JodaModule())
+				.enable(MapperFeature.AUTO_DETECT_GETTERS)
+				.build());
+			}
 		}
+			
 		return this.jongo;
 	}
 	

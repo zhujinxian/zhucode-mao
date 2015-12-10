@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Count {
 	String cnd() default "";
-	String doc() default "";
+	String coll() default "";
 }

@@ -22,7 +22,7 @@ public class InsertQuerier implements Querier {
 	public Object execute(StatementRuntime runtime) {
 		Method m = runtime.getMethod();
 		Insert insert = m.getAnnotation(Insert.class);
-		String doc = insert.doc();
+		String doc = insert.coll();
 		
 		List<Object> paras = runtime.getParameters();
 		

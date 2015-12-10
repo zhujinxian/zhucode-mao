@@ -24,7 +24,7 @@ public class FindQuerier implements Querier {
 		
 		Method m = runtime.getMethod();
 		Find find = m.getAnnotation(Find.class);
-		String doc = find.doc();
+		String doc = find.coll();
 		String cnd = find.cnd();
 		String prj = find.prj();
 		String sort = find.sort();

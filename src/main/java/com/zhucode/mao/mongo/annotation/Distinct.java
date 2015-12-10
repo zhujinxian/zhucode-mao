@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 public @interface Distinct {
 	String key() default "";
 	String cnd() default "";
-	String doc() default "";
+	String coll() default "";
 }

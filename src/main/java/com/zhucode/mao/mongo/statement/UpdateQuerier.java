@@ -24,7 +24,7 @@ public class UpdateQuerier implements Querier {
 	public Object execute(StatementRuntime runtime) {
 		Method m = runtime.getMethod();
 		Update update = m.getAnnotation(Update.class);
-		String doc = update.doc();
+		String doc = update.coll();
 		String cnd = update.cnd();
 		String with = update.with();
 		boolean upsert = update.upsert();

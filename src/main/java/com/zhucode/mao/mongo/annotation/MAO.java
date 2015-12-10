@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface MAO {	
 	String db() default "";
+	String source() default "mongo.dataSourceFactory";
+	boolean camel() default true;
 }

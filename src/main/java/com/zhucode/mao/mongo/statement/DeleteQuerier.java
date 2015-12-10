@@ -23,7 +23,7 @@ public class DeleteQuerier implements Querier {
 	public Object execute(StatementRuntime runtime) {
 		Method m = runtime.getMethod();
 		Delete del = m.getAnnotation(Delete.class);
-		String doc = del.doc();
+		String doc = del.coll();
 		String cnd = del.cnd();
 		
 		int queryParasNum = StringUtils.countMatches(cnd, "#");

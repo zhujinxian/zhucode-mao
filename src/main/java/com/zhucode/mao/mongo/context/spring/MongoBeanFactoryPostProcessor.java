@@ -23,6 +23,7 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 
+import com.zhucode.mao.mongo.annotation.MAO;
 import com.zhucode.mao.mongo.dataaccess.DataSourceFactory;
 
 public class MongoBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
@@ -147,8 +148,10 @@ public class MongoBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 		/*
 		 * 属性及其设置要按 MongoFactoryBean 的要求来办
 		 */
+		
+		
 		propertyValues.addPropertyValue("objectType", maoClassName);
-		propertyValues.addPropertyValue("dataSourceFactory", getDataSourceFactory(beanFactory));
+		propertyValues.addPropertyValue("dataSourceFactory", getDataSourceFactory(beanFactory, beanDefinition));
 	
 		
 		ScannedGenericBeanDefinition scannedBeanDefinition = (ScannedGenericBeanDefinition) beanDefinition;
@@ -163,12 +166,22 @@ public class MongoBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 		}
 	}
 
-	private Object getDataSourceFactory(ConfigurableListableBeanFactory beanFactory) {
+	private Object getDataSourceFactory(ConfigurableListableBeanFactory beanFactory, BeanDefinition beanDefinition) {
 		
-		if (beanFactory.containsBeanDefinition("mongo.dataSourceFactory")) {
+		Class<?> clazz = null;
+		try {
+			clazz = Class.forName(beanDefinition.getBeanClassName());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		
+		MAO mao = clazz.getAnnotation(MAO.class);
+		String dataSource = mao.source();
+		
+		if (beanFactory.containsBeanDefinition(dataSource)) {
 			
 			DataSourceFactory dataSourceFactory = (DataSourceFactory) beanFactory.getBean(
-                     "mongo.dataSourceFactory", DataSourceFactory.class);
+					dataSource, DataSourceFactory.class);
 			
 			return dataSourceFactory;
 		}

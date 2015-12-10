@@ -24,7 +24,7 @@ public class DistinctQuerier implements Querier {
 	public Object execute(StatementRuntime runtime) {
 		Method m = runtime.getMethod();
 		Distinct distinct = m.getAnnotation(Distinct.class);
-		String doc = distinct.doc();
+		String doc = distinct.coll();
 		String cnd = distinct.cnd();
 		String key = distinct.key();
 		

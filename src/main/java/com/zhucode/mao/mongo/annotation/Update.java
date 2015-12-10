@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Update {
 	
-	String doc() default "";
+	String coll() default "";
 	String cnd() default "";
 	String with() default "";
 	boolean upsert() default false;
