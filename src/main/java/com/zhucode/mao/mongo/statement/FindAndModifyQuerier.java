@@ -96,8 +96,10 @@ public class FindAndModifyQuerier implements Querier {
 		
 		if (with.equals("") && remove) {
 			f.remove();
+		} else if (withParasNum > 0) {
+			f.with(with, withParas.toArray());
 		} else {
-			f.with(with, withParas);
+			f.with(with);
 		}
 		
 		if (isNew) {

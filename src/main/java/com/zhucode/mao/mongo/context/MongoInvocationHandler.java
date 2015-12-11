@@ -21,6 +21,7 @@ import com.zhucode.mao.mongo.annotation.Count;
 import com.zhucode.mao.mongo.annotation.Delete;
 import com.zhucode.mao.mongo.annotation.Distinct;
 import com.zhucode.mao.mongo.annotation.Find;
+import com.zhucode.mao.mongo.annotation.FindAndModify;
 import com.zhucode.mao.mongo.annotation.Insert;
 import com.zhucode.mao.mongo.annotation.MAO;
 import com.zhucode.mao.mongo.annotation.Update;
@@ -30,6 +31,7 @@ import com.zhucode.mao.mongo.generic.GenericMAOImp;
 import com.zhucode.mao.mongo.statement.CountQuerier;
 import com.zhucode.mao.mongo.statement.DeleteQuerier;
 import com.zhucode.mao.mongo.statement.DistinctQuerier;
+import com.zhucode.mao.mongo.statement.FindAndModifyQuerier;
 import com.zhucode.mao.mongo.statement.FindQuerier;
 import com.zhucode.mao.mongo.statement.InsertQuerier;
 import com.zhucode.mao.mongo.statement.JongoStatement;
@@ -135,6 +137,8 @@ public class MongoInvocationHandler implements InvocationHandler {
             		query = new CountQuerier(jongo);
             	} else if (method.isAnnotationPresent(Distinct.class)) {
             		query = new DistinctQuerier(jongo);
+            	} else if (method.isAnnotationPresent(FindAndModify.class)) {
+            		query = new FindAndModifyQuerier(jongo);
             	}
             	
             	if (query != null) {
